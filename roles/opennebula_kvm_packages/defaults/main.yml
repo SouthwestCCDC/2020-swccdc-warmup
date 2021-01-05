@@ -1,0 +1,3 @@
+---
+# defaults file for opennebula_kvm_packages
+onkp_become_user: "root"

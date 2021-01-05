@@ -1,0 +1,56 @@
+---
+## update the ansible hosts file with the new kvm host
+## configure via ansible
+#ansible-playbook -i hosts -u root --ask-pass deploy-opennebula.yml
+### some tasks will fail because the sunstone server has a different root password 
+#
+## now that users are provisioned, run ansible again to configure all opennebula nodes
+#ansible-playbook -i hosts -u brady deploy-opennebula.yml
+#
+## add the new host to the kvm cluster in the sunstone ui
+
+- name: configure all opennebula nodes for common and repo
+  hosts: opennebula_all
+  roles:
+    - role: common
+      vars:
+        common_users: "{{ global_local_admins }}"
+
+    - role: opennebula_repo
+
+- name: configure opennebula sunstone nodes
+  hosts: opennebula_sunstone
+  roles:
+    - role: opennebula_sunstone_packages
+
+- name: configure opennebula kvm nodes
+  hosts: opennebula_kvm
+  pre_tasks:
+    - name: get known_hosts
+      delegate_to: 127.0.0.1
+      command: "ssh-keyscan -p {{ item }} 127.0.0.1"
+      loop: ["8022", "9022"]
+      register: known_hosts_results
+      tags:
+        - ssh
+
+  roles:
+    - role: opennebula_kvm_packages
+
+- name: configure all opennebula nodes
+  hosts: opennebula_all
+  pre_tasks:
+    - name: get known_hosts
+      delegate_to: 127.0.0.1
+      command: "ssh-keyscan -p {{ item }} 127.0.0.1"
+      loop: ["8022", "9022"]
+      register: known_hosts_results
+      tags:
+        - ssh
+
+  roles:
+    - role: opennebula_ssh_keys
+      vars:
+        onsk_ssh_known_hosts: "{{ known_hosts_results }}"
+
+    - role: opennebula_networking

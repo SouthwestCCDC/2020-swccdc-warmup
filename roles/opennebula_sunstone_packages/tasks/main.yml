@@ -1,0 +1,43 @@
+---
+# tasks file for opennebula_sunstone_packages
+- name: install epel
+  become: true
+  package:
+    name: "epel-release"
+
+- name: install mariadb
+  become: true
+  package:
+    name: "mariadb-server"
+
+- name: install ntp
+  become: true
+  package:
+    name: ["ntp", "ntpdate"]
+
+- name: start ntp
+  systemd:
+    name: "ntpd"
+    state: "started"
+    enabled: true
+
+- name: install opennebula sunstone packages
+  become: true
+  become_user: "{{ onkp_become_user }}"
+  package:
+    name: ["opennebula-server", "opennebula-sunstone", "opennebula-ruby", "opennebula-gate", "opennebula-flow"]
+  tags:
+    - packages
+
+- name: start opennebula
+  systemd:
+    name: "opennebula"
+    state: "started"
+    enabled: true
+
+- name: start opennebula-sunstone
+  systemd:
+    name: "opennebula-sunstone"
+    state: "started"
+    enabled: true
+

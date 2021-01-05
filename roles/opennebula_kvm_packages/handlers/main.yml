@@ -1,0 +1,8 @@
+---
+# handlers file for opennebula_kvm_packages
+- name: restart libvirtd
+  become: true
+  become_user: "{{ onkp_become_user }}"
+  systemd:
+    name: libvirtd
+    state: restarted

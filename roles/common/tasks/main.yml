@@ -1,0 +1,88 @@
+---
+- name: disable firewalld
+  become: true
+  systemd:
+    name: "firewalld"
+    state: "stopped"
+    enabled: false
+
+- name: create user base group
+  become: true
+  become_user: "{{ common_become_user }}"
+  group:
+    name: "{{ item.name }}"
+  loop: "{{ common_users }}"
+  tags:
+    - users
+    - groups
+
+- name: create user
+  become: true
+  become_user: "{{ common_become_user }}"
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.name }}"
+  loop: "{{ common_users }}"
+  tags:
+    - users
+
+- name: make user admin
+  become: true
+  become_user: "{{ common_become_user }}"
+  user:
+    name: "{{ item.name }}"
+    groups: "wheel"
+    append: true
+  loop: "{{ common_users }}"
+  tags:
+    - users
+    - groups
+
+- name: create user ssh dir
+  become: true
+  become_user: "{{ item.name }}"
+  file:
+    path: "~/.ssh"
+    state: "directory"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: 0700
+  loop: "{{ common_users }}"
+  tags:
+    - users
+    - ssh
+
+- name: add authorized public key
+  become: true
+  become_user: "{{ common_become_user }}"
+  authorized_key:
+    user: "{{ item.0.name }}"
+    key: " {{ item.1 }}"
+  with_subelements:
+    - "{{ common_users }}"
+    - public_keys
+  tags:
+    - users
+    - ssh
+
+- name: enable passwordless sudo
+  become: true
+  become_user: "{{ common_become_user }}"
+  template:
+    src: swccdc-sudoers.j2
+    dest: /etc/sudoers.d/swccdc
+    group: root
+    mode: 0440
+  tags:
+    - users
+    - sudo
+    - groups
+
+- name: disable SELinux
+  become: true
+  become_user: "{{ common_become_user }}"
+  ansible.posix.selinux:
+    state: disabled
+  tags:
+    - security
+    - selinux

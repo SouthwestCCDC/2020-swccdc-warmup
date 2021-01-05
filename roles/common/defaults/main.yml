@@ -1,0 +1,4 @@
+---
+# defaults file for common
+common_users: {}
+common_become_user: root

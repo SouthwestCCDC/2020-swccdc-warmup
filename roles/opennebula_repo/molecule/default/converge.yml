@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include opennebula_repo"
+      include_role:
+        name: "opennebula_repo"

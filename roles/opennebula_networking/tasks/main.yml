@@ -1,0 +1,12 @@
+---
+# tasks file for opennebula_networking
+- name: support MANY vxlans
+  become: true
+  become_user: "{{ onn_become_user }}"
+  ansible.posix.sysctl:
+    name: "net.ipv4.igmp_max_memberships"
+    value: "4096"
+    state: "present"
+
+
+

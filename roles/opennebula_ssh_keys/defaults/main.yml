@@ -1,0 +1,4 @@
+---
+# defaults file for opennebula_ssh_keys
+onsk_ssh_known_hosts: {}
+onsk_oneadmin_user: "oneadmin"

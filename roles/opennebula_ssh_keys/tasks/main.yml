@@ -1,0 +1,68 @@
+---
+# tasks file for opennebula_ssh_keys
+- name: create user ssh dir
+  become: true
+  become_user: "{{ onsk_oneadmin_user }}"
+  file:
+    path: "~/.ssh"
+    state: "directory"
+    owner: "{{ onsk_oneadmin_user }}"
+    group: "{{ onsk_oneadmin_user }}"
+    mode: 0700
+  tags:
+    - ssh
+
+- name: write oneadmin ssh private key
+  become: true
+  become_user: "{{ onsk_oneadmin_user }}"
+  copy:
+    content: "{{ global_opennebula_all_id_rsa }}"
+    owner: "{{ onsk_oneadmin_user }}"
+    group: "{{ onsk_oneadmin_user }}"
+    mode: "0600"
+    dest: "~/.ssh/id_rsa"
+  tags:
+    - ssh
+
+- name: write oneadmin ssh public key
+  become: true
+  become_user: "{{ onsk_oneadmin_user }}"
+  copy:
+    content: "{{ global_opennebula_all_id_rsa_pub }}"
+    owner: "{{ onsk_oneadmin_user }}"
+    group: "{{ onsk_oneadmin_user }}"
+    mode: "0644"
+    dest: "~/.ssh/id_rsa.pub"
+  tags:
+    - ssh
+
+- name: write oneadmin authorized key
+  become: true
+  become_user: "{{ onsk_oneadmin_user }}"
+  ansible.posix.authorized_key:
+    user: "{{ onsk_oneadmin_user }}"
+    state: "present"
+    key: "{{ global_opennebula_all_id_rsa_pub }}"
+  tags:
+    - ssh
+
+####
+# NOTE:
+# This task exects input formated the way the following would output
+# - name: get known_hosts
+#     delegate_to: 127.0.0.1
+#     command: "ssh-keyscan {{ item }}"
+#     loop: "{{ kvm_hosts }}"
+#     register: known_hosts_results
+####
+- name: set oneadmin known_hosts
+  become: true
+  become_user: "{{ onsk_oneadmin_user }}"
+  known_hosts:
+    name: "{{ item.1.split(' ')[0] }}"
+    key: "{{ item.1 }}"
+  with_subelements:
+    - "{{ onsk_ssh_known_hosts.results }}"
+    - stdout_lines
+  tags:
+    - ssh

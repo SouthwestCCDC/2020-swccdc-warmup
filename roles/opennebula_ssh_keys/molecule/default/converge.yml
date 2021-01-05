@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include opennebula_ssh_keys"
+      include_role:
+        name: "opennebula_ssh_keys"

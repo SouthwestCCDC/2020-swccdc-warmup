@@ -1,0 +1,5 @@
+[opennebula_kvm]
+127.0.0.1 ansible_port=9022
+
+[opennebula_sunstone]
+127.0.0.1 ansible_port=8022

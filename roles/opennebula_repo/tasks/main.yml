@@ -1,0 +1,15 @@
+---
+# tasks file for opennebula_repo
+- name: add opennebula repository
+  become: true
+  become_user: "{{ onr_become_user }}"
+  yum_repository:
+    name: "opennebula"
+    description: "repository containing packages for the opennebula application"
+    baseurl: "https://downloads.opennebula.org/repo/5.10/CentOS/7/$basearch"
+    enabled: true
+    gpgkey: "https://downloads.opennebula.org/repo/repo.key"
+    gpgcheck: true
+  tags:
+    - repos
+    - packages

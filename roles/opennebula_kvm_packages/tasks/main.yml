@@ -1,0 +1,36 @@
+---
+# tasks file for opennebula_kvm_packages
+- name: install ntp
+  become: true
+  package:
+    name: ["ntp", "ntpdate"]
+
+- name: start ntp
+  systemd:
+    name: "ntpd"
+    state: "started"
+    enabled: true
+
+- name: install opennebula kvm packages
+  become: true
+  become_user: "{{ onkp_become_user }}"
+  package:
+    name: ["opennebula-node-kvm", "centos-release-qemu-ev"]
+  notify: restart libvirtd
+  tags:
+    - packages
+
+- name: install feature-rich kvm
+  become: true
+  become_user: "{{ onkp_become_user }}"
+  package:
+    name: qemu-kvm-ev
+  notify: restart libvirtd
+  tags:
+    - packages
+
+- name: wait for services to start
+  pause:
+    seconds: 10
+  tags:
+    - packages

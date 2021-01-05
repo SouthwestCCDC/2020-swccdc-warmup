@@ -1,0 +1,6 @@
+---
+# defaults file for opennebula_networking
+onn_interface: "b0"
+onn_vlans: []
+onn_bonded_interfaces: []
+onn_become_user: "root"

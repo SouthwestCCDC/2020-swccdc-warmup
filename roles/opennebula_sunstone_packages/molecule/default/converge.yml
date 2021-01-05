@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include opennebula_sunstone_packages"
+      include_role:
+        name: "opennebula_sunstone_packages"
