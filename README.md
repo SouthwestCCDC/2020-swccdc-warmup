@@ -33,6 +33,7 @@
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-ssh,tcp,127.0.0.1,8022,,22"`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-vnc,tcp,127.0.0.1,29876,,29876"`
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "hypervisor-ssh,tcp,127.0.0.1,9022,,22"`
+- execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "router-ssh,tcp,127.0.0.1,10022,10.0.2.200,22"`
 - boot `opennebula-frontend` and login
   - execute `hostnamectl set-hostname opennebula-frontend`
   - execute `echo "10.235.59.1 opennebula-frontend" >> /etc/hosts`
@@ -89,10 +90,17 @@
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone,tcp,127.0.0.1,9869,,9869"`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-ssh,tcp,127.0.0.1,8022,,22"`
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "hypervisor-ssh,tcp,127.0.0.1,9022,,22"`
+- execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "router-ssh,tcp,127.0.0.1,10022,10.0.2.200,22"`
 - boot `opennebula-frontend`
 - boot `opennebula-hypervisor`
-- open a browser and browse to http://127.0.0.1:8996
-  - create a virtual router by creating a new vm from the `Service VNF` template
+- open a browser and browse to http://127.0.0.1:8996 and login
+  - register your computer's ssh public key with opennebula
+    - to do this select your user name toward the top right of the browser window then select settings
+    - select the auth button
+    - select the edit button in the "Public SSH Key" section of the page
+    - paste your public key
+    - all future VMs provisioned by your user will allow ssh authentication for `root` using your public key
+  - create a virtual router by creating a new vm from the `Service VNF` template named `test-router`
     - enable dns server
       - listen on eth1
     - enable nat
@@ -101,7 +109,18 @@
       - router interface eth0,eth1
     - eth0 attached to `external-network`
     - eth1 attached to `internal-network`
+  - at this point you should have a VM named `test-router`
+    - it should have 2 ip addresses
+      - 10.0.2.200
+      - 172.16.4.1
+    - from your vm host computer you should be able to use your public key and ssh to the router with the following command:
+      - `ssh -p 10022 root@127.0.0.1`
   - create an ubuntu 20.04 instance
     - eth0 attached to `internal-network`
   - open a vnc for the ubuntu instance. It should have an address of `172.16.4.2`
     - check connectivity by pinging google.com
+  - delete the ubuntu 20.04 instance you just created and tested
+  - create a new instance with the exact same configuration parameters using terraform and the opennebula provider
+    - https://registry.terraform.io/providers/OpenNebula/opennebula/latest/docs
+    - https://registry.terraform.io/providers/OpenNebula/opennebula/latest/docs/resources/virtual_machine
+  - delete all instances
