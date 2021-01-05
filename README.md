@@ -30,6 +30,7 @@
   - select adapter 2
     - set to internal network with name: `swccdc-warmup2020-internal`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone,tcp,127.0.0.1,9869,,9869"`
+- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-rpc,tcp,127.0.0.1,2633,,2633"`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-ssh,tcp,127.0.0.1,8022,,22"`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-vnc,tcp,127.0.0.1,29876,,29876"`
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "hypervisor-ssh,tcp,127.0.0.1,9022,,22"`
@@ -88,6 +89,7 @@
   - select adapter 2
     - set to internal network with name: `swccdc-warmup2020-internal`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone,tcp,127.0.0.1,9869,,9869"`
+- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-rpc,tcp,127.0.0.1,2633,,2633"`
 - execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-ssh,tcp,127.0.0.1,8022,,22"`
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "hypervisor-ssh,tcp,127.0.0.1,9022,,22"`
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "router-ssh,tcp,127.0.0.1,10022,10.0.2.200,22"`
