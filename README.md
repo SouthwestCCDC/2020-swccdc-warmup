@@ -1,20 +1,21 @@
-# OVA credentials
+# 2020 SWCCDC Warmup
+## OVA credentials
 - username: `root`
 - password: `ccdc`
 
-# oneadmin credentials
+## oneadmin credentials
 - username: `oneadmin`
 - password: `93762290fadc4665338878b8fee76d5c`
 
-# minimum system requirements
+## minimum system requirements
 - 32GB available disk
 - 7GB available RAM
 
-# opennebula vm ubuntu 20.04 template instance credentials
+## opennebula vm ubuntu 20.04 template instance credentials
 - username: `root`
 - password: `ccdc`
 
-# provisioning notes (for black team)
+## provisioning notes (for black team)
 - configure networking for the `opennebula-frontend` vm
   - select settings -> network -> adapter 1
     - set to NAT
@@ -68,7 +69,7 @@
     - network mask: `255.255.255.0`
     - mtu of guests: `1000`
 
-# usage notes (for blue team)
+## usage notes (for blue team)
 - download and install VirtualBox
 - download the ovas
 - import all ovas into virtual box
