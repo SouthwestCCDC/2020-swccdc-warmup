@@ -1,4 +1,12 @@
 # 2020 SWCCDC Warmup
+## Blue Team Notes
+- Applicable sections of this readme are:
+  - OVA credentials
+  - oneadmin credentials
+  - minimum system requirements
+  - opennebula vm ubuntu 20.04 template instance credentials
+  - usage notes (for blue team)
+
 ## OVA credentials
 - username: `root`
 - password: `ccdc`
