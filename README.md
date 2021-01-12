@@ -133,7 +133,7 @@
 			    - modify turn on virtualization based security to not configured (or the original state)
 			- bcdedit /set hypervisorlaunchtype auto
 - download and install VirtualBox
-- download the ovas
+- download the ovas (https://drive.google.com/file/d/1SWjL0rmpoARVceT5FUEHkjL1C2ESI5ph/view?usp=sharing)
 - import all ovas into virtual box
 - select the opennebula-frontend
   - select settings -> network -> adapter 1
