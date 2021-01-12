@@ -147,7 +147,7 @@
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "router-ssh,tcp,127.0.0.1,10022,10.0.2.200,22"`
 - boot `opennebula-frontend`
 - boot `opennebula-hypervisor`
-- open a browser and browse to http://127.0.0.1:8996 and login
+- open a browser and browse to http://127.0.0.1:8996 and login using the oneadmin credentials located at the top of this document.
   - register your computer's ssh public key with opennebula
     - to do this select your user name toward the top right of the browser window then select settings
     - select the auth button
