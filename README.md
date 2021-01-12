@@ -24,27 +24,63 @@
 - password: `ccdc`
 
 ## provisioning notes (for black team)
-- configure networking for the `opennebula-frontend` vm
-  - select settings -> network -> adapter 1
-    - set to NAT
-  - select adapter 2
-    - set to internal network with name: `swccdc-warmup2020-internal`
-- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone,tcp,127.0.0.1,9869,,9869"`
-- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-rpc,tcp,127.0.0.1,2633,,2633"`
-- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-ssh,tcp,127.0.0.1,8022,,22"`
-- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-vnc,tcp,127.0.0.1,29876,,29876"`
-- execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "hypervisor-ssh,tcp,127.0.0.1,9022,,22"`
-- execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "router-ssh,tcp,127.0.0.1,10022,10.0.2.200,22"`
-- boot `opennebula-frontend` and login
-  - execute `hostnamectl set-hostname opennebula-frontend`
-  - execute `echo "10.235.59.1 opennebula-frontend" >> /etc/hosts`
-  - execute `echo "10.235.59.2 opennebula-hypervisor" >> /etc/hosts`
+- If not running OSX, ensure your bios has the virtualization cpu features enabled
+  - If running windows 10
+    - download and install the intel processor identification utility
+      - https://downloadcenter.intel.com/download/28539
+      - if vt-d disabled
+        - gpedit
+          - computer configuration -> administrative templates -> system -> device guard
+            - modify turn on virtualization based security to disabled (document the original state)
+		- bcdedit /set hypervisorlaunchtype off
+		- reboot
+        - NOTE: IF YOU DO THIS, REMEMBER TO REVERT THE CHANGE AFTER THE EXERCISE
+		  - to restore
+		    - gpedit
+			  - computer configuration -> administrative templates -> system -> device guard
+			    - modify turn on virtualization based security to not configured (or the original state)
+			- bcdedit /set hypervisorlaunchtype auto
+- Create a vm `opennebula-frontend`
+  - 1 vcpu
+  - 2GB RAM
+  - 12GB Disk
+  - configure networking for the `opennebula-frontend` vm
+    - select settings -> network -> adapter 1
+      - set to NAT
+    - select adapter 2
+      - set to internal network with name: `swccdc-warmup2020-internal`
+  - attach the centos 7 iso to the vm
+- Create a vm `opennebula-hypervisor`
+  - 4 vcpu
+  - 4GB RAM
+  - 20GB Disk
 - configure networking for the `opennebula-hypervisor` vm
   - select settings -> network -> adapter 1
     - set to NAT
   - select adapter 2
     - set to internal network with name: `swccdc-warmup2020-internal`
+  - attach the centos 7 iso to the vm
+- install centos 7 on `opennebula-frontend`
+  - hostname: `opennebula-frontend`
+  - configure enp0s3 to be enabled and use dhcp (default)
+  - configure enp0s8 to be 10.235.59.1/24 (no gateway or dns)
+- install centos 7 on `opennebula-hypervisor`
+  - hostname: `opennebula-hypervisor`
+  - configure enp0s3 to be enabled and use dhcp (default)
+  - configure enp0s8 to be 10.235.59.2/24 (no gateway or dns)
+- after install power off both VMs
+- if you're running windows, execute `cd "C:\Program Files\Oracle\VirtualBox"` to bring VBoxManage into execution scope
+- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone,tcp,127.0.0.1,9869,,9869"
+- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-rpc,tcp,127.0.0.1,2633,,2633"`
+- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-ssh,tcp,127.0.0.1,8022,,22"`
+- execute `VBoxManage modifyvm "opennebula-frontend" --natpf1 "sunstone-vnc,tcp,127.0.0.1,29876,,29876"`
+- execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "hypervisor-ssh,tcp,127.0.0.1,9022,,22"`
+- execute `VBoxManage modifyvm "opennebula-hypervisor" --natpf1 "router-ssh,tcp,127.0.0.1,10022,10.0.2.200,22"`
 - execute `VBoxManage modifyvm "opennebula-hypervisor" --nested-hw-virt on`
+- execute `VBoxManage modifyvm "opennebula-hypervisor" --cpus 4`
+- boot `opennebula-frontend` and login
+  - execute `echo "10.235.59.1 opennebula-frontend" >> /etc/hosts`
+  - execute `echo "10.235.59.2 opennebula-hypervisor" >> /etc/hosts`
 - boot `opennebula-hypervisor` and login
   - use nmtui to create a bridge interface named br0 with enp0s3 set as a slave
     - set to link-local for ipv4 and ipv6
@@ -80,6 +116,22 @@
     - mtu of guests: `1000`
 
 ## usage notes (for blue team)
+- If not running OSX, ensure your bios has the virtualization cpu features enabled
+  - If running windows 10
+    - download and install the intel processor identification utility
+      - https://downloadcenter.intel.com/download/28539
+      - if vt-d disabled
+        - gpedit
+          - computer configuration -> administrative templates -> system -> device guard
+            - modify turn on virtualization based security to disabled (document the original state)
+		- bcdedit /set hypervisorlaunchtype off
+		- reboot
+        - NOTE: IF YOU DO THIS, REMEMBER TO REVERT THE CHANGE AFTER THE EXERCISE
+		  - to restore
+		    - gpedit
+			  - computer configuration -> administrative templates -> system -> device guard
+			    - modify turn on virtualization based security to not configured (or the original state)
+			- bcdedit /set hypervisorlaunchtype auto
 - download and install VirtualBox
 - download the ovas
 - import all ovas into virtual box
